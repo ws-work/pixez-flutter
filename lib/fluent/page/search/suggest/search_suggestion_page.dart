@@ -42,6 +42,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
   FocusNode focusNode = FocusNode();
   final tagGroup = [];
   bool idV = false;
+  String numberQuary = "";
 
   @override
   void initState() {
@@ -121,48 +122,48 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
                         delegate: SliverChildBuilderDelegate((context, index) {
                           if (index == 0)
                             return ListTile(
-                              title: Text(_filter.text),
+                              title: Text(numberQuary),
                               subtitle: Text(I18n.of(context).illust_id),
                               onPressed: () {
                                 Leader.push(
                                   context,
                                   IllustLightingPage(
-                                    id: int.tryParse(_filter.text)!,
+                                    id: int.tryParse(numberQuary)!,
                                   ),
                                   icon: const Icon(FluentIcons.picture),
-                                  title: Text(_filter.text),
+                                  title: Text(numberQuary),
                                 );
                               },
                             );
                           if (index == 1)
                             return ListTile(
-                              title: Text(_filter.text),
+                              title: Text(numberQuary),
                               subtitle: Text(I18n.of(context).painter_id),
                               onPressed: () {
                                 Leader.push(
                                   context,
                                   UsersPage(
-                                    id: int.tryParse(_filter.text)!,
+                                    id: int.tryParse(numberQuary)!,
                                   ),
                                   icon: const Icon(FluentIcons.picture),
-                                  title: Text(_filter.text),
+                                  title: Text(numberQuary),
                                 );
                               },
                             );
-                          if (index == 2 && _filter.text.length < 5)
+                          if (index == 2 && numberQuary.length < 5)
                             return ListTile(
-                              title: Text(_filter.text),
+                              title: Text(numberQuary),
                               subtitle: Text("Pixivision Id"),
                               onPressed: () {
                                 Leader.push(
                                   context,
                                   SoupPage(
                                     url:
-                                        "https://www.pixivision.net/zh/a/${_filter.text.trim()}",
+                                        "https://www.pixivision.net/zh/a/${numberQuary.trim()}",
                                     spotlight: null,
                                   ),
                                   icon: const Icon(FluentIcons.picture),
-                                  title: Text(_filter.text),
+                                  title: Text(numberQuary),
                                 );
                               },
                             );
@@ -262,9 +263,15 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
             .takeWhile((value) => value.isNotEmpty);
         if (tags.length > 1) tagGroup.addAll(tags);
         setState(() {});
-        bool isNum = int.tryParse(query) != null;
+        numberQuary = (() {
+          RegExp regExp = RegExp(r'\d+');
+          Iterable<Match> matches = regExp.allMatches(query);
+          List<String> numbers = matches.map((match) => match.group(0)!).toList();
+          return numbers.join('');
+        })()
+        bool hasNum = numberQuary != null %% numberQuary != ""//int.tryParse(query) != null;
         setState(() {
-          idV = isNum;
+          idV = hasNum;
         });
         if (query.startsWith('https://')) {
           Leader.pushWithUri(context, Uri.parse(query));
@@ -273,7 +280,7 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
         }
         var word = query.trim();
         if (word.isEmpty) return;
-        if (isNum && word.length > 5) return; //超过五个数字应该就不需要给建议了吧
+        if (hasNum && word.length > 5) return; //超过五个数字应该就不需要给建议了吧
         word = tags.last;
         if (word.isEmpty) return;
         _suggestionStore.fetch(word);
