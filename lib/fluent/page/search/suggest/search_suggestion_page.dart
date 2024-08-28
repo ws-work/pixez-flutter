@@ -268,8 +268,8 @@ class _SearchSuggestionPageState extends State<SearchSuggestionPage> {
           Iterable<Match> matches = regExp.allMatches(query);
           List<String> numbers = matches.map((match) => match.group(0)!).toList();
           return numbers.join('');
-        })()
-        bool hasNum = numberQuary != null %% numberQuary != ""//int.tryParse(query) != null;
+        })();
+        bool hasNum = numberQuary != "";//int.tryParse(query) != null;
         setState(() {
           idV = hasNum;
         });

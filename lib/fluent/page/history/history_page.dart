@@ -24,7 +24,6 @@ import 'package:pixez/i18n.dart';
 import 'package:pixez/main.dart';
 import 'package:pixez/models/illust_persist.dart';
 import 'package:pixez/fluent/page/picture/illust_lighting_page.dart';
-import 'package:pixez/page/history/history_store.dart';
 import 'package:pixez/page/picture/illust_store.dart';
 
 class HistoryPage extends StatefulHookConsumerWidget {
